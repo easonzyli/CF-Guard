@@ -267,7 +267,7 @@ class Item_Embedding(nn.Module):
         Projection_matrix = U[...,:clipped_dim]
         
         if key_words['whitening']:
-            print("Standard!")
+            print("Whitening!")
             Diagnals = np.sqrt(1/S)[:clipped_dim]
             Projection_matrix = Projection_matrix.dot(np.diag(Diagnals)) # V_{\lamda} into V_1"""
         
