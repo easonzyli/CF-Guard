@@ -139,7 +139,7 @@ class Item_Embedding(nn.Module):
             
         elif emb_pipline == "AF": # AlphaFuse
             key_words["item_frequency_flag"] = False
-            key_words['standardization'] = True
+            key_words['whitening'] = True
             
             self.cliped_language_embs = self.semantic_space_decomposion( key_words["hidden_dim"],  **key_words)
 
@@ -154,8 +154,8 @@ class Item_Embedding(nn.Module):
 
         elif emb_pipline == "CFG": # CF-Guard
             key_words["item_frequency_flag"] = False
-            key_words['standardization'] = True
-            print(key_words['standardization'])
+            key_words['whitening'] = True
+            print(key_words['whitening'])
             item_ids = sorted(self.item_freq.keys()) 
             item_freq_array = np.array([self.item_freq[i] for i in item_ids])
 
@@ -266,7 +266,7 @@ class Item_Embedding(nn.Module):
         
         Projection_matrix = U[...,:clipped_dim]
         
-        if key_words['standardization']:
+        if key_words['whitening']:
             print("Standard!")
             Diagnals = np.sqrt(1/S)[:clipped_dim]
             Projection_matrix = Projection_matrix.dot(np.diag(Diagnals)) # V_{\lamda} into V_1"""
