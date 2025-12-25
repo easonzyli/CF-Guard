@@ -35,7 +35,6 @@ python train_bert.py --data games --cuda 2  --random_seed 22 --model_type CF-Gua
 # movies
 python train_bert.py --data movies --cuda 2  --random_seed 22 --model_type CF-Guard  --hidden_dim 128 --CF_model_type BERT4Rec   --lambda_cold 0.2  --learn_dim 128 --alpha 5.0  
 
-
 # baby
 python train_bert.py --data baby --cuda 2  --random_seed 22 --model_type CF-Guard  --hidden_dim 128 --CF_model_type BERT4Rec   --lambda_cold 1.0  --learn_dim 32 --alpha 0.5  
 ```
