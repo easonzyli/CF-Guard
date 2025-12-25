@@ -118,7 +118,7 @@ def parse_args():
     parser.add_argument('--null_thres', type=float, default=None,)
     parser.add_argument('--null_dim', type=int, default=64,)
     parser.add_argument('--item_frequency_flag', type=str2bool, default=False)
-    parser.add_argument('--standardization', type=str2bool, default=False)
+    parser.add_argument('--whitening', type=str2bool, default=False)
     parser.add_argument('--cover', type=bool, default=False)
     parser.add_argument('--ID_space', type=str, default="singular")
     parser.add_argument('--inject_space', type=str, default="singular")
