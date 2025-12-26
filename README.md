@@ -11,7 +11,26 @@ To reproduce the results reported in the paper, please follow these steps:
 
 https://drive.google.com/file/d/1OKhI0kByn0ZuO0x_oE_ld3_L4raKbG1R/view?usp=sharing
 
-Please download our datasets and unzip
+Please download our datasets and unzip.  The directory structure should be as follows:
+
+```text
+data
+├── time
+    ├── baby
+    │   ├── data_statis.df
+    │   ├── data_test.txt
+    │   ├── data_train.txt
+    │   ├── data_valid.txt
+    │   ├── id2title.json
+    │   ├── item_freq.json
+    │   ├── item2id.json
+    │   └── qwen3_embeddings.pkl
+    ├── games
+    │   └── (same structure as `baby`)
+    └── movies
+        └── (same structure as `baby`)
+
+```
 
 ## 2. Running CF-Guard
 
