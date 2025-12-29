@@ -67,24 +67,6 @@ bash baselines.sh
 ```
 
 
-## Hyperparameters for Timestamp Settings
-
-### SASRec backbone
-
-| Dataset    | $\lambda_{cold}$  | $d_c$    | $\alpha$  | 
-| ---------- | ------------- | ------------ | ------ |
-| **Games** | 0.2           | 32           | 5.0    |      
-| **Movies**   | 0.2        | 128           | 0.3    |     
-| **Baby** | 0.5           | 16          | 0.5    |   
-
-### Bert4Rec backbone
-
-| Dataset    | $\lambda_{cold}$ | $d_c$    | $\alpha$  | 
-| ---------- | ------------- | ------------ | ------ | 
-| **Games** | 0.2           | 64           | 5.0    |   
-| **Movies**   | 0.2        | 128           | 5.0    |   
-| **Baby** | 1.0           | 32           | 0.5    |    
-
 
 ## Environments
 
