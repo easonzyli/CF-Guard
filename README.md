@@ -1,4 +1,4 @@
-This is the official implementation of the paper "Language Embeddings Can Undermine ID Embeddings Learning in Sequential Recommendation" 
+This is the official implementation of the paper "Language Embeddings Can Undermine ID Embeddings Learning in Sequential Recommendation". 
 
 # Overview
 
