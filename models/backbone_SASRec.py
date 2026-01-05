@@ -598,7 +598,7 @@ class SASRec_backbone(nn.Module):
         
 
         batch_size = target.shape[0]
-        neg_samples = torch.randint(0, self.item_num, (batch_size, neg_ratio))
+        neg_samples = torch.randint(1, self.item_num+1, (batch_size, neg_ratio))
         expanded_target = target.view(batch_size, 1).expand(batch_size, neg_ratio).cpu()
 
         mask = neg_samples == expanded_target
