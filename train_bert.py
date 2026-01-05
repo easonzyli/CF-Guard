@@ -220,8 +220,6 @@ if __name__ == '__main__':
                     if args.model_type != "TedRec":
                         if args.loss_type == "CE":
                             loss = model.calculate_ce_loss(seq, target)
-                        elif args.loss_type == "BCE":
-                            loss = model.calculate_bce_loss(seq, target, args.neg_ratio)
                         elif args.loss_type == "infoNCE":
                             loss = model.calculate_infonce_loss(seq,  target, args.neg_ratio, args.temperature)
                         
