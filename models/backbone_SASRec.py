@@ -628,7 +628,7 @@ class SASRec_backbone(nn.Module):
         
 
         batch_size = target.shape[0]
-        neg_samples = torch.randint(0, self.item_num, (batch_size, neg_ratio))
+        neg_samples = torch.randint(1, self.item_num+1, (batch_size, neg_ratio)) # padding value = 0
         expanded_target = target.view(batch_size, 1).expand(batch_size, neg_ratio).cpu()
         expanded_sequences = sequences.view(batch_size, -1, 1).expand(batch_size, sequences.shape[1], neg_ratio).cpu()
 
@@ -1030,7 +1030,7 @@ class CFNet_Bert(CF_Bert_backbone):
     def calculate_infonce_loss(self, sequences, target, neg_ratio, temperature, emb_type="both"):
         
         batch_size = target.shape[0]
-        neg_samples = torch.randint(0, self.item_num, (batch_size, neg_ratio))
+        neg_samples = torch.randint(1, self.item_num+1, (batch_size, neg_ratio))
         expanded_target = target.view(batch_size, 1).expand(batch_size, neg_ratio).cpu()
         expanded_sequences = sequences.view(batch_size, -1, 1).expand(batch_size, sequences.shape[1], neg_ratio).cpu()
 
@@ -1096,7 +1096,7 @@ class CFNet_GRU(CF_GRU_backbone):
     def calculate_infonce_loss(self, sequences, target, neg_ratio, temperature, emb_type="both"):
         
         batch_size = target.shape[0]
-        neg_samples = torch.randint(0, self.item_num, (batch_size, neg_ratio))
+        neg_samples = torch.randint(1, self.item_num+1, (batch_size, neg_ratio))
         expanded_target = target.view(batch_size, 1).expand(batch_size, neg_ratio).cpu()
         expanded_sequences = sequences.view(batch_size, -1, 1).expand(batch_size, sequences.shape[1], neg_ratio).cpu()
 
@@ -1161,7 +1161,7 @@ class CFNet(CF_backbone):
     def calculate_infonce_loss(self, sequences, target, neg_ratio, temperature, emb_type="both"):
         
         batch_size = target.shape[0]
-        neg_samples = torch.randint(0, self.item_num, (batch_size, neg_ratio))
+        neg_samples = torch.randint(1, self.item_num+1, (batch_size, neg_ratio))
         expanded_target = target.view(batch_size, 1).expand(batch_size, neg_ratio).cpu()
         mask = neg_samples == expanded_target
         while mask.any():
@@ -1252,7 +1252,7 @@ class CF_Guard(SASRec_backbone):
     def calculate_infonce_loss(self, sequences, target, neg_ratio, temperature, emb_type="both"):
         
         batch_size = target.shape[0]
-        neg_samples = torch.randint(0, self.item_num, (batch_size, neg_ratio))
+        neg_samples = torch.randint(1, self.item_num+1, (batch_size, neg_ratio))
         expanded_target = target.view(batch_size, 1).expand(batch_size, neg_ratio).cpu()
         expanded_sequences = sequences.view(batch_size, -1, 1).expand(batch_size, sequences.shape[1], neg_ratio).cpu()
 
@@ -1394,7 +1394,7 @@ class DIFSR(nn.Module):
         
 
         batch_size = target.shape[0]
-        neg_samples = torch.randint(0, self.item_num, (batch_size, neg_ratio))
+        neg_samples = torch.randint(1, self.item_num+1, (batch_size, neg_ratio))
         expanded_target = target.view(batch_size, 1).expand(batch_size, neg_ratio).cpu()
         expanded_sequences = sequences.view(batch_size, -1, 1).expand(batch_size, sequences.shape[1], neg_ratio).cpu()
 
