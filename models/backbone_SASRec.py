@@ -157,6 +157,7 @@ class Item_Embedding(nn.Module):
                 ).astype(self.cliped_language_embs.dtype, copy=False)
                 print("Controlled mode: random language embeddings")
             elif controlled_mode == "shuffle":
+                self.cliped_language_embs = self.semantic_space_decomposion( key_words["hidden_dim"],  **key_words)
                 shuffle_idx = np.random.permutation(
                     self.cliped_language_embs.shape[0]
                 )
