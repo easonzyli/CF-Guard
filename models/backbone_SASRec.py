@@ -141,8 +141,6 @@ class Item_Embedding(nn.Module):
             key_words["item_frequency_flag"] = False
             key_words['whitening'] = True
             
-            self.cliped_language_embs = self.semantic_space_decomposion( key_words["hidden_dim"],  **key_words)
-
             # ================================================================
             # CONTROLLED INPUT LANGUAGE EMBEDDING EXPERIMENT: START
             # This block changes only projected language embeddings. The ID
@@ -151,6 +149,7 @@ class Item_Embedding(nn.Module):
             controlled_mode = key_words.get("controlled_mode")
             if controlled_mode in (None, "language"):
                 if controlled_mode == "language":
+                    self.cliped_language_embs = self.semantic_space_decomposion( key_words["hidden_dim"],  **key_words)
                     print("Controlled mode: original language embeddings")
             elif controlled_mode == "random":
                 self.cliped_language_embs = np.random.normal(
