@@ -12,7 +12,18 @@ import torch.nn.functional as F
 import json
 from torch.utils.data import Dataset, DataLoader
 
-from models.backbone_SASRec import SASRec,MoRec, UniSRec, RLMRec, LLMInit, AlphaFuse, LLMEmb,  TedRec, DIFSR, CF_Guard
+from models.backbone_SASRec_controlled import (
+    SASRec,
+    MoRec,
+    UniSRec,
+    RLMRec,
+    LLMInit,
+    AlphaFuse,
+    LLMEmb,
+    TedRec,
+    DIFSR,
+    CF_Guard,
+)
 from utils import evaluate
 
 class SeqDataset(Dataset):
@@ -112,7 +123,7 @@ def parse_args():
     parser.add_argument('--kept_dim', type=int, default=None,
                         help='Number of hidden factors, i.e., ID embedding size.')
     ### model selection
-    parser.add_argument('--model_type', type=str, default="BERT4Rec")
+    parser.add_argument('--model_type', type=str, default="AlphaFuse")
     parser.add_argument('--SR_aligement_type', type=str, default="gen")
     # AlphaFuse
     parser.add_argument('--null_thres', type=float, default=None,)
@@ -122,6 +133,13 @@ def parse_args():
     parser.add_argument('--cover', type=bool, default=False)
     parser.add_argument('--ID_space', type=str, default="singular")
     parser.add_argument('--inject_space', type=str, default="singular")
+    parser.add_argument(
+        '--controlled_mode',
+        type=str,
+        choices=('language', 'random', 'shuffle', 'zero'),
+        default='language',
+        help='Controlled AlphaFuse input language embedding variant.',
+    )
     parser.add_argument('--only_eval', type=bool, default=False)
     # CF-Gurad & CFR settings
     parser.add_argument('--dropout_rate2', type=float, default=0.5,)
@@ -146,6 +164,11 @@ if __name__ == '__main__':
     
     data_directory = f'data/{args.split_mode}/{args.data}/'
     model_directory = f'results/{args.split_mode}/{args.data}/'
+    controlled_suffix = (
+        f"_controlled-{args.controlled_mode}"
+        if args.model_type == "AlphaFuse"
+        else ""
+    )
 
     key_words["language_embs_path"] = data_directory
     
@@ -260,7 +283,7 @@ if __name__ == '__main__':
                     print("\n best NDCG@10 is updated to ",best_ndcg10,"at epoch",epoch)
                     
                     if args.model_type != "CF-Guard":
-                        epoch_str = f"SASRec_{args.model_type}_rs{args.random_seed}_IDdim{args.hidden_dim}_Textdim{args.null_dim}_{args.lr}_{args.loss_type}_{args.ID_embs_init_type}.pth"
+                        epoch_str = f"SASRec_{args.model_type}_rs{args.random_seed}_IDdim{args.hidden_dim}_Textdim{args.null_dim}_{args.lr}_{args.loss_type}_{args.ID_embs_init_type}{controlled_suffix}.pth"
                     else:
                         epoch_str = f"{args.CF_model_type}_SASRec_{args.model_type}_rs{args.random_seed}_IDdim{args.hidden_dim}_Textdim{args.null_dim}_{args.lr}_{args.loss_type}_{args.ID_embs_init_type}.pth"
 
@@ -273,7 +296,7 @@ if __name__ == '__main__':
                 print('----------------------------------------------------------------')
 
     if args.model_type != "CF-Guard":
-        epoch_str = f"SASRec_{args.model_type}_rs{args.random_seed}_IDdim{args.hidden_dim}_Textdim{args.null_dim}_{args.lr}_{args.loss_type}_{args.ID_embs_init_type}.pth"
+        epoch_str = f"SASRec_{args.model_type}_rs{args.random_seed}_IDdim{args.hidden_dim}_Textdim{args.null_dim}_{args.lr}_{args.loss_type}_{args.ID_embs_init_type}{controlled_suffix}.pth"
     else:
         epoch_str = f"{args.CF_model_type}_SASRec_{args.model_type}_rs{args.random_seed}_IDdim{args.hidden_dim}_Textdim{args.null_dim}_{args.lr}_{args.loss_type}_{args.ID_embs_init_type}.pth"
     
@@ -284,13 +307,6 @@ if __name__ == '__main__':
     print('-------------------------- TEST RESULTS --------------------------')
     
     _ = evaluate(model, test_loader, device)
-    
-    
-    """save_path = f"data/{args.split_mode}/{args.data}/{args.model_type}_{args.language_model_type}_{args.ID_embs_init_type}_{args.lr}_{args.dropout_rate}_{args.hidden_dim}.pkl"
-    
-    save_id_path = f"data/{args.split_mode}/{args.data}/id/{args.model_type}_{args.language_model_type}_{args.ID_embs_init_type}_{args.lr}_{args.dropout_rate}_{args.hidden_dim}_cfnet{args.CF_model_type}.pkl"
-
-    model.save_item_embeddings(save_path)"""
     
     print("Done.")
 
