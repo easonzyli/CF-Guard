@@ -143,6 +143,40 @@ class Item_Embedding(nn.Module):
             
             self.cliped_language_embs = self.semantic_space_decomposion( key_words["hidden_dim"],  **key_words)
 
+            # ================================================================
+            # CONTROLLED INPUT LANGUAGE EMBEDDING EXPERIMENT: START
+            # This block changes only projected language embeddings. The ID
+            # embeddings are initialized independently after this block.
+            # ================================================================
+            controlled_mode = key_words.get("controlled_mode")
+            if controlled_mode in (None, "language"):
+                if controlled_mode == "language":
+                    print("Controlled mode: original language embeddings")
+            elif controlled_mode == "random":
+                self.cliped_language_embs = np.random.normal(
+                    size=self.cliped_language_embs.shape
+                ).astype(self.cliped_language_embs.dtype, copy=False)
+                print("Controlled mode: random language embeddings")
+            elif controlled_mode == "shuffle":
+                shuffle_idx = np.random.permutation(
+                    self.cliped_language_embs.shape[0]
+                )
+                self.cliped_language_embs = self.cliped_language_embs[shuffle_idx]
+                print("Controlled mode: shuffled language embeddings")
+            elif controlled_mode == "zero":
+                self.cliped_language_embs = np.zeros_like(
+                    self.cliped_language_embs
+                )
+                print("Controlled mode: zero language embeddings")
+            elif controlled_mode is not None:
+                raise ValueError(
+                    f"Unsupported controlled_mode: {controlled_mode}. "
+                    "Expected one of: language, random, shuffle, zero."
+                )
+            # ================================================================
+            # CONTROLLED INPUT LANGUAGE EMBEDDING EXPERIMENT: END
+            # ================================================================
+
             padding_emb = np.random.rand(self.cliped_language_embs.shape[1])  # padding ID embedding
             self.cliped_language_embs_with_padding = np.vstack([padding_emb, self.cliped_language_embs])
             self.language_embeddings = nn.Embedding.from_pretrained(
