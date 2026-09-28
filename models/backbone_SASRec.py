@@ -221,8 +221,8 @@ class Item_Embedding(nn.Module):
             language_embs_tensor = F.normalize(language_embs_tensor, p=2, dim=-1)  # [num_items, dim]
 
             self.text_similarity = language_embs_tensor @ language_embs_tensor.T
-            self.text_similarity = self.text_similarity.fill_diagonal_(-1e1).to("cuda").detach()
-            self.text_similarity = F.softmax(self.text_similarity / self.tau , dim=-1)  # [num_items, num_items]
+            self.text_similarity.fill_diagonal_(-1e1)
+            self.text_similarity = F.softmax(self.text_similarity / self.tau , dim=-1).detach().cpu()  # [num_items, num_items]
 
     def load_language_embeddings(self, directory, language_model_type, scale = 1.0):
         language_embs = pd.read_pickle(os.path.join(directory, f'{language_model_type}_embeddings.pkl'))
@@ -1050,8 +1050,9 @@ class CFNet_Bert(CF_Bert_backbone):
         super().__init__(device, **key_words)
         self.use_eco = key_words["lambda_cold"] > 0
         self.item_embeddings = Item_Embedding("ID", **key_words)
-        self.text_similarity = text_similary
+        self.text_similarity = text_similary.detach().cpu()
         self.cold_items = cold_items
+        self.cold_items_cpu = cold_items.detach().cpu()
         self.alpha = key_words["alpha"]
 
     def embed_ID(self, x):
@@ -1101,7 +1102,7 @@ class CFNet_Bert(CF_Bert_backbone):
             cold_embs = F.normalize(cold_embs, p=2, dim=-1)
             cold_logits = torch.matmul(log_feats, cold_embs.T)  # [B, num_cold_items]
             
-            similarity = self.text_similarity[target][:, self.cold_items] # (B, num_cold_items)       
+            similarity = self.text_similarity[target.detach().cpu()][:, self.cold_items_cpu].to(cold_logits.device) # (B, num_cold_items)       
             
             cold_probs = cold_logits
             eco_loss =  - (similarity * cold_probs).sum(dim=-1) .mean()
@@ -1116,8 +1117,9 @@ class CFNet_GRU(CF_GRU_backbone):
         super().__init__(device, **key_words)
         self.use_eco = key_words["lambda_cold"] > 0
         self.item_embeddings = Item_Embedding("ID", **key_words)
-        self.text_similarity = text_similary
+        self.text_similarity = text_similary.detach().cpu()
         self.cold_items = cold_items
+        self.cold_items_cpu = cold_items.detach().cpu()
         self.alpha = key_words["alpha"]
 
     def embed_ID(self, x):
@@ -1166,7 +1168,7 @@ class CFNet_GRU(CF_GRU_backbone):
             cold_embs = F.normalize(cold_embs, p=2, dim=-1)
             cold_logits = torch.matmul(log_feats, cold_embs.T)  # [B, num_cold_items]
             
-            similarity = self.text_similarity[target][:, self.cold_items] # (B, num_cold_items)       
+            similarity = self.text_similarity[target.detach().cpu()][:, self.cold_items_cpu].to(cold_logits.device) # (B, num_cold_items)       
             
             cold_probs = cold_logits
             eco_loss =  - (similarity * cold_probs).sum(dim=-1).mean()
@@ -1181,8 +1183,9 @@ class CFNet(CF_backbone):
         super().__init__(device, **key_words)
         self.use_eco = key_words["lambda_cold"] > 0
         self.item_embeddings = Item_Embedding("ID", **key_words)
-        self.text_similarity = text_similary
+        self.text_similarity = text_similary.detach().cpu()
         self.cold_items = cold_items
+        self.cold_items_cpu = cold_items.detach().cpu()
         self.alpha = key_words["alpha"]
 
     def embed_ID(self, x):
@@ -1230,7 +1233,7 @@ class CFNet(CF_backbone):
             cold_embs = F.normalize(cold_embs, p=2, dim=-1)
             cold_logits = torch.matmul(log_feats, cold_embs.T)  # [B, num_cold_items]
             
-            similarity = self.text_similarity[target][:, self.cold_items] # (B, num_cold_items)       
+            similarity = self.text_similarity[target.detach().cpu()][:, self.cold_items_cpu].to(cold_logits.device) # (B, num_cold_items)       
             
             cold_probs = cold_logits
             eco_loss =  - (similarity * cold_probs).sum(dim=-1).mean()
