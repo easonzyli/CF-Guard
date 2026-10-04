@@ -147,10 +147,9 @@ class Item_Embedding(nn.Module):
             # embeddings are initialized independently after this block.
             # ================================================================
             controlled_mode = key_words.get("controlled_mode")
+            self.cliped_language_embs = self.semantic_space_decomposion( key_words["hidden_dim"],  **key_words)
             if controlled_mode in (None, "language"):
-                if controlled_mode == "language":
-                    self.cliped_language_embs = self.semantic_space_decomposion( key_words["hidden_dim"],  **key_words)
-                    print("Controlled mode: original language embeddings")
+                print("Controlled mode: original language embeddings")
             elif controlled_mode == "random":
                 self.cliped_language_embs = np.random.normal(
                     size=self.cliped_language_embs.shape
